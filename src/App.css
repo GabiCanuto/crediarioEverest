@@ -1,0 +1,286 @@
+:root{
+  --accent: #d6a84a;
+  --accent-2: #f4c430;
+  --bg-1: #0b0c10;
+  --bg-2: #0f1115;
+  --muted: #bfc1c8;
+  --text: #edf0f5;
+  --card-bg: rgba(255,255,255,0.03);
+  --card-border: rgba(255,255,255,0.06);
+  --btn-bg: rgba(255,255,255,0.04);
+  --btn-border: rgba(255,255,255,0.10);
+  --bgx: 0px;
+  --bgy: 0px;
+  --tiltX: 0deg;
+  --tiltY: 0deg;
+}
+
+/* base */
+*{ box-sizing:border-box }
+html,body,#root{ height:100% }
+body{
+  margin:0;
+  font-family: Inter, system-ui, Arial, sans-serif;
+  color:var(--text);
+  background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  overflow-x: hidden;
+}
+
+/* header */
+.header{
+  position:fixed; inset:0 0 auto 0; height:64px;
+  display:flex; align-items:center; justify-content:center;
+  background: rgba(11,12,16,0.72);
+  backdrop-filter: blur(10px);
+  border-bottom:1px solid rgba(255,255,255,0.02);
+  z-index:100;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;          /* diminui espaço entre logo e texto */
+  font-size: 2rem;      /* aumenta o tamanho do texto EVEREST */
+  font-weight: bold;
+}
+
+.brand-logo {
+  margin-top: 25px !important;
+  height: 80px;         /* aumenta a logo (pode ajustar: 48px, 64px, etc) */
+  width: auto;
+}
+
+/* content area */
+.hero{
+  min-height:100%;
+  display:grid; place-items:center;
+  padding:100px 16px 36px;
+  position:relative;
+  z-index:1;
+}
+
+/* card (animated, but background remains static) */
+.card{
+  width:min(720px, 94%);
+  padding:28px 24px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+  border:1px solid var(--card-border);
+  border-radius:18px;
+  box-shadow: 0 18px 48px rgba(0,0,0,0.6);
+  backdrop-filter: blur(10px);
+  transform-style:preserve-3d;
+  transform: perspective(900px) rotateX(var(--tiltX)) rotateY(var(--tiltY));
+  transition: transform .28s ease, box-shadow .28s ease;
+  position: relative;
+  overflow: hidden;
+  will-change: transform;
+}
+
+/* rotating shimmer layer (subtle) */
+.card::before{
+  content:"";
+  position:absolute;
+  top:-40%; left:-40%;
+  width:180%; height:180%;
+  background: conic-gradient(from 0deg, rgba(214,168,74,0.06), transparent 20%, rgba(244,196,48,0.04), transparent 60%);
+  opacity:0.35;
+  z-index:-1;
+  filter: blur(26px);
+  animation: cardShimmer 12s linear infinite;
+}
+@keyframes cardShimmer{
+  0%{ transform: rotate(0deg) }
+  100%{ transform: rotate(360deg) }
+}
+
+/* headings */
+.headline{
+  font-size: clamp(20px, 3.6vw, 28px);
+  margin:0 0 6px; font-weight:800; color:var(--text);
+  text-align:center;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 60%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  letter-spacing:0.4px;
+}
+.sub{ margin:0 0 18px; color:var(--muted); font-size:14px; text-align:center; }
+
+/* CTAs stacked */
+.ctas{
+  display:flex; flex-direction:column; gap:12px; align-items:center;
+}
+
+/* neutral button style (texto centralizado) */
+.btn{
+  width:100%;
+  max-width:520px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:14px 20px;
+  height:56px;
+  border-radius:14px;
+  text-decoration:none;
+  color:var(--text);
+  font-weight:800;
+  letter-spacing:0.2px;
+  font-size:15px;
+  background: var(--btn-bg);
+  border:1px solid var(--btn-border);
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  transition: transform .22s cubic-bezier(.2,.9,.2,1), box-shadow .22s ease, background .22s ease, border-color .22s ease;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  backdrop-filter: blur(6px);
+  will-change: transform, opacity;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* animated but subtle border + shimmer on the button */
+.btn::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  border-radius:16px;
+  padding:2px;
+  background: conic-gradient(from 0deg, transparent, rgba(214,168,74,0.22), transparent);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity:0;
+  animation: rotateBorder 6s linear infinite;
+  transition: opacity .28s ease;
+}
+@keyframes rotateBorder{ to{ transform: rotate(360deg) } }
+
+.btn::after{
+  /* subtle shimmer band behind button content */
+  content:"";
+  position:absolute;
+  left:-120%;
+  top:0;
+  width:40%;
+  height:200%;
+  transform: skewX(-12deg);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+  opacity:0;
+  transition: opacity .4s ease, left .6s ease;
+  z-index:0;
+}
+
+/* desktop hover behaviors (kept) */
+.btn:hover::before{ opacity:0.85; }
+.btn:hover::after{ opacity:1; left:120%; }
+
+.btn:hover{
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 20px 48px rgba(0,0,0,0.5), 0 0 18px rgba(214,168,74,0.08);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  border-color: rgba(214,168,74,0.2);
+}
+.btn:focus{
+  outline: 3px solid rgba(214,168,74,0.16);
+  outline-offset:3px;
+}
+
+/* ripple effect on click/touch */
+.btn:active::after{
+  content:"";
+  position:absolute; inset:0;
+  background: radial-gradient(circle at var(--x,50%) var(--y,50%),
+    rgba(214,168,74,0.24) 0%,
+    rgba(244,196,48,0.14) 18%,
+    transparent 40%);
+  animation: enhancedRipple .6s ease-out forwards;
+  z-index:10;
+}
+@keyframes enhancedRipple{ to{ opacity:0; transform: scale(1.4) } }
+
+/* entrance animation: gentle bounce + fade, stagger via inline style */
+.btn-animate{
+  animation: btnIn .52s cubic-bezier(.2,.9,.2,1) both;
+}
+@keyframes btnIn{
+  0%{ opacity:0; transform: translateY(18px) scale(.98) }
+  60%{ opacity:1; transform: translateY(-6px) scale(1.02) }
+  100%{ opacity:1; transform: translateY(0) scale(1) }
+}
+
+/* ---------------------------------------------------------------------
+   Mobile-specific: ensure animations are visible (no hover on touch)
+   - Provide continuous but subtle animations for buttons on touch devices
+   - Keep performance-friendly transforms (use GPU-accelerated properties)
+   ------------------------------------------------------------------*/
+@media (hover: none) and (pointer: coarse) {
+  /* make the card shimmer slightly faster so it reads on small screens */
+  .card::before{
+    animation-duration: 7s;
+    opacity: 0.28;
+    filter: blur(20px);
+  }
+
+  /* mobile - show the border more gently and a slow pulse on buttons */
+  .btn{
+    animation: mobilePulse 3.8s ease-in-out infinite;
+    transform-origin: center;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.45);
+  }
+  @keyframes mobilePulse{
+    0%{ transform: translateY(0) scale(1) }
+    30%{ transform: translateY(-6px) scale(1.02) }
+    60%{ transform: translateY(-2px) scale(1.01) }
+    100%{ transform: translateY(0) scale(1) }
+  }
+
+  /* keep shimmer band moving continuously on mobile (more visible) */
+  .btn::after{
+    opacity:0.9;
+    left:120%;
+    animation: mobileShimmer 2.6s linear infinite;
+  }
+  @keyframes mobileShimmer{
+    0%{ left:-120% }
+    100%{ left:120% }
+  }
+
+  /* make border slightly visible without hover so there's always subtle motion */
+  .btn::before{ opacity:0.45; }
+
+  /* quick feedback on touch (smaller press transform) */
+  .btn:active{
+    transform: scale(0.995);
+    transition: transform .08s ease;
+  }
+
+  /* entrance animation: slightly faster on mobile */
+  .btn-animate{
+    animation-duration: .46s;
+    animation-timing-function: cubic-bezier(.2,.9,.2,1);
+  }
+}
+
+/* responsive tweaks (general) */
+@media (max-width:640px){
+  .card{
+    padding:22px 18px;
+    border-radius:14px;
+    box-shadow: 0 14px 36px rgba(0,0,0,0.6);
+  }
+  .card::before{ filter: blur(18px); opacity:0.28; }
+  .btn{
+    height:54px;
+    border-radius:12px;
+    padding:12px 16px;
+    font-size:15px;
+  }
+  .btn:hover{ transform: translateY(-4px) scale(1.015); }
+}
+
+/* accessibility: respect reduced-motion */
+@media (prefers-reduced-motion: reduce){
+  *{ animation:none !important; transition:none !important; }
+  .btn{ transform:none !important; box-shadow: 0 8px 20px rgba(0,0,0,0.35); }
+  .card::before{ display:none; }
+}
